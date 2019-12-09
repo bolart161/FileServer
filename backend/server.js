@@ -3,6 +3,7 @@ const bodyParser = require("body-parser"); //Module for parsing JSON
 const fs = require("fs"); //Module for work with File System (FS). We use it for scan directory
 const cors = require("cors"); // Module for work with cross-domain request
 const multer = require("multer"); // Library for work with storage
+const apiSrv = require("./authServer");
 
 const ROOT_FILE_PATH = "/var/www/html/files"; //Root path for storage
 
