@@ -41,7 +41,7 @@ let storage = multer.diskStorage({
 		callback(null, `${ROOT_FILE_PATH}/users/${req.headers.id}/${typeFile}`)
 	},
 	filename: (req, file, callback) => {
-		callback(null, Date.now() + "-" + file.originalname);
+		callback(null, `${Date.now()}-${file.originalname}`);
 	}
 });
 
@@ -53,7 +53,7 @@ function getNamesOfFiles(fileType, userId) {
 
 	let index = 0;
 
-	fs.readdirSync(docsFolder+"/"+fileType).forEach((file) => {
+	fs.readdirSync(`${docsFolder}/${fileType}`).forEach((file) => {
 		myFiles.push({id: index, text: file, ref: `files/users/${userId}/${fileType}/${file}`, fileType: fileType});
 		index += 1;
 	});
@@ -67,11 +67,11 @@ app.get("/files/:fileType/:id", (req, res) => {
 });
 
 // @apiRequest POST for upload file to server in user storage
-app.post("/upload", function (req, res) {
+app.post("/upload", (req, res) => {
 	const upload = multer({ storage : storage}).single("my-file");
 
-	upload(req, res, function(err) {
-		if(err) {
+	upload(req, res, (err) => {
+		if (err) {
 			return res.end("Error uploading file.");
 		}
 		res.end("File is uploaded");
@@ -80,12 +80,12 @@ app.post("/upload", function (req, res) {
 
 // @apiRequest DELETE for delete file from user storage in server
 app.delete("/deleteFile/:fileType/:id/:fileName", (req, res) => {
-	fs.stat(`${ROOT_FILE_PATH}/users/${req.params.id}/${req.params.fileType}/${req.params.fileName}`, function (err, stats) {
+	fs.stat(`${ROOT_FILE_PATH}/users/${req.params.id}/${req.params.fileType}/${req.params.fileName}`, (err) => {
 		if (err) {
 			return console.error(err);
 		}
 
-		fs.unlink(`${ROOT_FILE_PATH}/users/${req.params.id}/${req.params.fileType}/${req.params.fileName}`, function(err) {
+		fs.unlink(`${ROOT_FILE_PATH}/users/${req.params.id}/${req.params.fileType}/${req.params.fileName}`, (err) => {
 			if (err) {
 				return console.error(err);
 			}
@@ -103,6 +103,6 @@ app.get("/files/users/:id/:type/:filename", (req, res) => {
 });
 
 // Start server on 3333 port, with callback, witch say that server was started
-app.listen(3333,  () => {
+app.listen(3333, () => {
 	console.log("Server app started");
 });
