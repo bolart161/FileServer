@@ -37,9 +37,9 @@ app.get("/users/:login/:password", (req, res) => {
 
 				return res.sendStatus(404);
 			});
-		} else {
-			return res.sendStatus(404);
 		}
+
+		return res.sendStatus(404);
 	})
 });
 
@@ -49,7 +49,7 @@ app.post("/users", (req, res) => {
 	if (!login || !password || !name || !surname) {
 		return res.sendStatus(404);
 	}
-	db.collection("usersAuthInfo").findOne({ login: req.body.login}, (err, userInfo) => {
+	db.collection("usersAuthInfo").findOne({login}, (err, userInfo) => {
 		if (err) {
 			console.error(err);
 			return res.sendStatus(404);
@@ -57,44 +57,43 @@ app.post("/users", (req, res) => {
 
 		if (userInfo) {
 			return res.sendStatus(409); // User already exist
-		} else {
-			let userBaseInfo = {login, name, surname};
-			let userAuthInfo = {login, password};
-
-			db.collection("usersAuthInfo").insertOne(userAuthInfo, (err) => {
-				if (err) {
-					console.error(err);
-					return res.sendStatus(404);
-				}
-			});
-
-			db.collection("users").insertOne(userBaseInfo, (err) => {
-				if (err) {
-					console.error(err);
-					return res.sendStatus(404);
-				}
-
-				fs.mkdir(`${ROOT_FILE_PATH}/users/${userBaseInfo._id}/docs`, { recursive: true }, (err) => {
-						if (err) {
-							console.log(err);
-						}
-					});
-
-				fs.mkdir(`${ROOT_FILE_PATH}/users/${userBaseInfo._id}/photo`, { recursive: true }, (err) => {
-						if (err) {
-							console.log(err);
-						}
-					});
-
-				fs.mkdir(`${ROOT_FILE_PATH}/users/${userBaseInfo._id}/video`, { recursive: true }, (err) => {
-						if (err) {
-							console.log(err);
-						}
-					});
-
-				res.json({ status: "Ok" });
-			})
 		}
+		let userBaseInfo = {login, name, surname};
+		let userAuthInfo = {login, password};
+
+		db.collection("usersAuthInfo").insertOne(userAuthInfo, (err) => {
+			if (err) {
+				console.error(err);
+				return res.sendStatus(404);
+			}
+		});
+
+		db.collection("users").insertOne(userBaseInfo, (err) => {
+			if (err) {
+				console.error(err);
+				return res.sendStatus(404);
+			}
+
+			fs.mkdir(`${ROOT_FILE_PATH}/users/${userBaseInfo._id}/docs`, { recursive: true }, (err) => {
+					if (err) {
+						console.log(err);
+					}
+				});
+
+			fs.mkdir(`${ROOT_FILE_PATH}/users/${userBaseInfo._id}/photo`, { recursive: true }, (err) => {
+					if (err) {
+						console.log(err);
+					}
+				});
+
+			fs.mkdir(`${ROOT_FILE_PATH}/users/${userBaseInfo._id}/video`, { recursive: true }, (err) => {
+					if (err) {
+						console.log(err);
+					}
+				});
+
+			res.json({ status: "Ok" });
+		})
 	});
 });
 
