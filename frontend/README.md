@@ -1,4 +1,4 @@
-# frontend
+# FileServer
 
 ## Project setup
 ```
