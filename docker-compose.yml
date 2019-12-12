@@ -1,0 +1,23 @@
+version: "3"
+services:
+  mongo:
+    image: mongo:4
+    restart: always
+
+  api:
+    build: ./NodeJS_API
+    restart: always
+    links:
+      - mongo
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./serverfilebase
+    restart: always
+
+networks:
+  default:
+    external:
+      name: server_network_1
