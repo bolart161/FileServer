@@ -5,7 +5,7 @@ services:
     restart: always
 
   api:
-    build: ./NodeJS_API
+    build: ./backend
     restart: always
     links:
       - mongo
@@ -14,7 +14,7 @@ services:
 
   frontend:
     build:
-      context: ./serverfilebase
+      context: ./frontend
     restart: always
 
 networks:
