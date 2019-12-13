@@ -14,33 +14,26 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // Auth user by login/password
 app.get("/users/:login/:password", (req, res) => {
-	db.collection("users").findOne({ login: req.params.login}, (err, userAllInfo) => {
-		if (err) {
-			console.error(err);
-			return res.sendStatus(404);
-		}
+    db.collection("users").findOne({ login: req.params.login}, (err, userAllInfo) => {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(404);
+        }
+        if (!userAllInfo) {
+           return res.sendStatus(404);
+        }
 
-		if (userAllInfo) {
-			db.collection("usersAuthInfo").findOne({ login: userAllInfo.login}, (err2, userAuthInfo) => {
-				if (err2) {
-					console.error(err2);
-					return res.sendStatus(404);
-				}
+        db.collection("usersAuthInfo").findOne({ login: userAllInfo.login}, (err, userAuthInfo) => {
+            if (err) {
+                return res.sendStatus(404);
+            }
+            if (userAuthInfo && (userAuthInfo.password === req.params.password)) {
+              return res.send(userAllInfo);
+            }
 
-				if (userAuthInfo) {
-					if (userAuthInfo.password === req.params.password) {
-						res.send(userAllInfo);
-					}
-
-					res.json({_id: null})
-				}
-
-				return res.sendStatus(404);
-			});
-		}
-
-		return res.sendStatus(404);
-	})
+            return res.json({_id: null})
+        });   
+    })
 });
 
 // Register new user
@@ -92,20 +85,21 @@ app.post("/users", (req, res) => {
 					}
 				});
 
-			res.json({ status: "Ok" });
+			return res.json({ status: "Ok" });
 		})
 	});
 });
 
 // Connect with database
-MongoClient.connect("mongodb://mongo:27017/myapi", { useNewUrlParser: true }, (err, database) => {
+MongoClient.connect("mongodb://mongo:27017/myapi", { useUnifiedTopology: true, useNewUrlParser: true }, (err, database) => {
 	if (err) {
 		return console.error(err);
 	}
 
 	db = database.db("myUsers1");
-
+	
 	app.listen(3012, function () {
 		console.log("Api app started");
 	})
 });
+

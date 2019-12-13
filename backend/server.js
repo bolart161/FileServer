@@ -64,7 +64,7 @@ function getNamesOfFiles(fileType, userId) {
 
 // @apiRequest GET for get all filenames by type of files from user directory
 app.get("/files/:fileType/:id", (req, res) => {
-	res.json(getNamesOfFiles(req.params.fileType, req.params.id))
+	return res.json(getNamesOfFiles(req.params.fileType, req.params.id))
 });
 
 // @apiRequest POST for upload file to server in user storage
@@ -75,7 +75,7 @@ app.post("/upload", (req, res) => {
 		if (err) {
 			return res.end("Error uploading file.");
 		}
-		res.end("File is uploaded");
+		return res.end("File is uploaded");
 	});
 });
 
@@ -91,7 +91,7 @@ app.delete("/deleteFile/:fileType/:id/:fileName", (req, res) => {
 				return console.error(err);
 			}
 
-			res.json({ status: "Ok" });
+			return res.json({ status: "Ok" });
 		});
 	});
 });
@@ -100,7 +100,7 @@ app.delete("/deleteFile/:fileType/:id/:fileName", (req, res) => {
 app.get("/files/users/:id/:type/:filename", (req, res) => {
 	const {id, type, filename} = req.params;
 
-	res.download(`${ROOT_FILE_PATH}/users/${id}/${type}/${filename}`);
+	return res.download(`${ROOT_FILE_PATH}/users/${id}/${type}/${filename}`);
 });
 
 // Start server on 3333 port, with callback, witch say that server was started
