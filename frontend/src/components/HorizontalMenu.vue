@@ -60,7 +60,7 @@ export default {
       this.setAuth(false);
       this.$router.push('auth');
     },
-  }
+  },
 };
 </script>
 

@@ -1,5 +1,4 @@
 FROM nginx:1.17.5-alpine
-FROM httpd:2.4
 
 RUN mkdir /app
 WORKDIR /app
